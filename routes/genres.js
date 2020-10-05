@@ -4,14 +4,12 @@ const mongoose = require('mongoose');
 const express = require('express');
 const router = express.Router();
 
-
-const genreSchema = mongoose.Schema({
+const Genre = mongoose.model('genre', genreSchema = mongoose.Schema({
     name: { type: String,
             minlength: 3,
             required: true
         }
-});
-const Genre = mongoose.model('genre', genreSchema);
+}));
 
 
 router.get('/', (req, res) => {
@@ -41,21 +39,16 @@ router.post('/', (req, res) => {
     })
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
+
+    const { error } = validateGenre(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
 
     const id = req.params.id;
-    Genre.findById(id, (err, genre) => {
-        if (err)    return res.status(500).send('could not retrieve genre: '+err.message);
-        if (!genre) return res.status(404).send(`genre with id ${id} not found`);
-             
-        const { error } = validateGenre(req.body);
-        if (error) return res.status(400).send(error.details[0].message);
-        genre.name = req.body.name;
-        genre.save( (err) => {
-            if (err) return res.status(500).send('Could not update genre: '+err.message);
-            res.send(genre);
-        });
-    });
+    const genre = await Genre.findByIdAndUpdate(id, {name: req.body.name}, { new: true });
+    if (!genre) return res.status(404).send(`genre with id ${id} not found`);
+
+    res.send(genre);
 });
 
 router.delete('/:id', (req, res) => {
