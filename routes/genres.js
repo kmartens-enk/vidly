@@ -23,7 +23,7 @@ router.get('/', (req, res) => {
 
 router.get('/:id', (req, res) => {
     const id = req.params.id;
-    Genres.findById(id, (err, genre) => {
+    Genre.findById(id, (err, genre) => {
         if (err) return res.status(500).send('could not retrieve genre: '+err.message);
         if (!genre) return res.status(404).send(`genre with id ${id} not found`);
         res.send(genre);
