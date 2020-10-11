@@ -3,14 +3,9 @@ const mongoose = require("mongoose");
 const express = require("express");
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  Customer.find({}, (err, customer) => {
-    if (err)
-      return res
-        .status(500)
-        .send("Could not retrieve customer: " + err.message);
-    res.send(customers);
-  });
+router.get("/", async (req, res) => {
+  const customers = await Customer.find({});
+  res.send(customers);
 });
 
 router.get("/:id", (req, res) => {
@@ -29,7 +24,10 @@ router.get("/:id", (req, res) => {
 router.post("/", (req, res) => {
   const { error } = validateCustomer(req.body);
   if (error) return res.status(400).send(error.details[0].message);
-  const customer = new Customer(req.body);
+  const customer = new Customer({
+    name: req.body.name,
+    phoneNumber: req.body.phoneNumber,
+    isGold: req.body.isGold});
   customer.save((err, savedcustomer) => {
     if (err)
       return res.status(400).send("Could not save customer: " + err.message);

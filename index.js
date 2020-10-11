@@ -1,5 +1,6 @@
 const genresRoute = require("./routes/genres");
 const customersRoute = require("./routes/customers");
+const moviesRoute = require('./routes/movies');
 const homepage = require("./routes/home");
 const authenticator = require("./middleware/authenticator");
 const mongoose = require("mongoose");
@@ -15,6 +16,7 @@ app.set("views", "./views");
 //Setup routes
 app.use("/api/genres", genresRoute);
 app.use("/api/customers", customersRoute);
+app.use('/api/movies', moviesRoute);
 app.use("/", homepage);
 
 //connect to db
