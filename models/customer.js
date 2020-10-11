@@ -10,7 +10,7 @@ const Customer = mongoose.model(
   })
 );
 
-function validatecustomer(customer) {
+function validateCustomer(customer) {
     const schema = Joi.object({
       name: Joi.string().min(3).required(),
     });
@@ -19,5 +19,4 @@ function validatecustomer(customer) {
   }
 
   exports.Customer = Customer;
-  exports.validatecustomer = validatecustomer;
-  
+  exports.validateCustomer = validateCustomer;
