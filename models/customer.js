@@ -4,15 +4,17 @@ const mongoose = require("mongoose");
 const Customer = mongoose.model(
   "customer",
   mongoose.Schema({
-    isGold: Boolean,
     name: { type: String, minlength: 3, required: true },
     phoneNumber: { type: String, minlength: 10 },
+    isGold: Boolean,
   })
 );
 
 function validateCustomer(customer) {
     const schema = Joi.object({
       name: Joi.string().min(3).required(),
+      phoneNumber: Joi.string().minlength(10).required(),
+      isGold: Joi.boolean().default(false)
     });
     const result = schema.validate(customer);
     return result;
