@@ -1,38 +1,36 @@
 
 const {Genre, validateGenre} = require('../models/genre');
 const mongoose = require('mongoose');
+const _ = require('lodash');
+const auth = require('../middleware/auth');
+const admin = require('../middleware/admin');
 const express = require('express');
 const router = express.Router();
 
 
-
-router.get('/', (req, res) => {
-    Genre.find({}, (err, genres) => {
-        if (err) return res.status(500).send('Could not retrieve genres: '+err.message);
-        res.send(genres);
-    })
+router.get('/', async (req, res) => {
+    const genres = await Genre.find();
+    res.send(genres);
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
     const id = req.params.id;
-    Genre.findById(id, (err, genre) => {
-        if (err) return res.status(500).send('could not retrieve genre: '+err.message);
-        if (!genre) return res.status(404).send(`genre with id ${id} not found`);
-        res.send(genre);
-    });
+    const genre = await Genre.findById(id);
+    if (!genre) return res.status(404).send(`genre with id ${id} not found`);
+    res.send(genre);
+    
 });
 
-router.post('/', (req, res) => {
+router.post('/', auth, async (req, res) => {
     const { error } = validateGenre(req.body);
     if (error) return res.status(400).send(error.details[0].message);
-    const genre = new Genre( req.body );
-    genre.save( (err, savedGenre) => {
-        if (err) return res.status(400).send('Could not save genre: '+err.message);
-        res.send(savedGenre);
-    })
+    const genre = new Genre( _.pick(req.body,['name'] ));
+    await genre.save();
+    res.send(genre);
+    
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
 
     const { error } = validateGenre(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -44,14 +42,12 @@ router.put('/:id', async (req, res) => {
     res.send(genre);
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', [auth, admin], async (req, res) => {   
     //find the give id
     const id = req.params.id;
-    Genre.findByIdAndRemove(id, (err, genre) => {
-        if (err) return res.status(500).send('could not delete genre: ', err.message);
-        if (!genre) return res.status(404).send(`genre with id ${id} not found`);
-        res.send(genre);
-    });
+    const genre = await Genre.findByIdAndRemove(id);
+    if (!genre) return res.status(404).send(`genre with id ${id} not found`);
+    res.send(genre);
 });
 
 module.exports = router;
