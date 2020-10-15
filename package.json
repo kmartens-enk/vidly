@@ -3,18 +3,24 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --watchAll --verbosew",
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": "12.18.4"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.0",
+    "compression": "^1.7.4",
     "config": "^3.3.2",
     "debug": "^4.2.0",
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
     "fawn": "^2.1.5",
+    "helmet": "^4.1.1",
     "joi": "^17.2.1",
     "joi-objectid": "^3.0.1",
     "jsonwebtoken": "^8.5.1",
@@ -22,9 +28,13 @@
     "mongodb": "^3.6.2",
     "mongoose": "^5.10.9",
     "pug": "^3.0.0",
-    "underscore": "^1.11.0"
+    "underscore": "^1.11.0",
+    "winston": "^3.3.3"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "jest": "^26.5.3",
+    "supertest": "^5.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kmartens-enk/vidly.git"
